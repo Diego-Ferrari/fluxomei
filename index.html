@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FluxoMEI - Controle Financeiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="barra-lateral">
+    <div class="logo-area">
+      <h1 class="logo-titulo">FluxoMEI</h1>
+    </div>
+
+    <nav class="menu-navegacao" aria-label="Menu principal">
+      <button class="botao-menu ativo" type="button" data-tela="dashboard">
+        <i class="fas fa-chart-line"></i><span>Dashboard</span>
+      </button>
+      <button class="botao-menu" type="button" data-tela="lancamentos">
+        <i class="fas fa-list"></i><span>Lançamentos</span>
+      </button>
+      <button class="botao-menu" type="button" data-tela="categorias">
+        <i class="fas fa-tags"></i><span>Categorias</span>
+      </button>
+      <button class="botao-menu" type="button" data-tela="contas">
+        <i class="fas fa-wallet"></i><span>Contas</span>
+      </button>
+      <button class="botao-menu" type="button" data-tela="relatorios">
+        <i class="fas fa-file-alt"></i><span>Relatórios</span>
+      </button>
+      <button class="botao-menu" type="button" data-tela="configuracoes">
+        <i class="fas fa-cog"></i><span>Configurações</span>
+      </button>
+    </nav>
+
+    <div class="rodape-lateral">
+      <div class="usuario-info">
+        <div class="usuario-avatar"><i class="fas fa-user"></i></div>
+        <div class="usuario-dados">
+          <span class="usuario-nome">Usuário</span>
+          <span class="usuario-email">usuario@email.com</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="conteudo-principal">
+    <header class="cabecalho-superior">
+      <div class="area-titulo">
+        <h2 class="titulo-pagina">Dashboard</h2>
+        <p class="subtitulo-pagina">Visão geral do caixa e movimentações do mês</p>
+      </div>
+
+      <div class="area-acoes-cabecalho">
+        <label class="sr-only" for="seletor-periodo">Selecionar mês</label>
+        <select id="seletor-periodo" class="seletor-periodo" aria-label="Selecionar mês do dashboard"></select>
+
+        <button id="botao-exportar" class="botao-secundario" type="button">
+          <i class="fas fa-download"></i>
+          Exportar
+        </button>
+
+        <button id="botao-novo-lancamento" class="botao-primario" type="button">
+          <i class="fas fa-plus"></i>
+          Novo lançamento
+        </button>
+      </div>
+    </header>
+
+    <section class="area-conteudo">
+      <section class="tela" data-tela="dashboard">
+        <div class="area-cards-resumo">
+          <article class="card-resumo card-receitas">
+            <div class="card-cabecalho">
+              <i class="fas fa-arrow-up"></i>
+              <span>Receitas</span>
+            </div>
+            <p id="card-receitas-valor" class="card-valor">R$ 0,00</p>
+            <p id="card-receitas-descricao" class="card-descricao">Total recebido no período selecionado</p>
+          </article>
+
+          <article class="card-resumo card-despesas">
+            <div class="card-cabecalho">
+              <i class="fas fa-arrow-down"></i>
+              <span>Despesas</span>
+            </div>
+            <p id="card-despesas-valor" class="card-valor">R$ 0,00</p>
+            <p id="card-despesas-descricao" class="card-descricao">Saídas registradas no período selecionado</p>
+          </article>
+
+          <article class="card-resumo card-saldo">
+            <div class="card-cabecalho">
+              <i class="fas fa-coins"></i>
+              <span>Saldo</span>
+            </div>
+            <p id="card-saldo-valor" class="card-valor">R$ 0,00</p>
+            <p id="card-saldo-descricao" class="card-descricao">Resultado líquido do período selecionado</p>
+          </article>
+        </div>
+
+        <article class="card-conteudo">
+          <div class="card-titulo-area">
+            <h3 id="titulo-grafico-movimentacoes">Entradas e saídas</h3>
+          </div>
+          <div class="grafico-area">
+            <canvas id="grafico-movimentacoes"></canvas>
+          </div>
+        </article>
+
+        <article class="card-conteudo">
+          <div class="card-titulo-area">
+            <h3 id="titulo-ultimos-lancamentos">Lançamentos do período</h3>
+          </div>
+          <div id="lista-ultimos-lancamentos" class="lista-lancamentos"></div>
+        </article>
+      </section>
+
+      <section class="tela" data-tela="lancamentos" style="display: none;">
+        <article class="card-conteudo">
+          <div class="card-titulo-area">
+            <h3>Todos os lançamentos</h3>
+            <button class="botao-primario" type="button" onclick="document.getElementById('botao-novo-lancamento').click()">
+              <i class="fas fa-plus"></i>
+              Novo lançamento
+            </button>
+          </div>
+
+          <div class="area-filtros">
+            <input id="filtro-lancamentos" class="campo-filtro" type="search" placeholder="Buscar por descrição">
+            <select id="filtro-tipo" class="seletor-filtro" aria-label="Filtrar por tipo">
+              <option value="">Todos os tipos</option>
+              <option value="receita">Receitas</option>
+              <option value="despesa">Despesas</option>
+            </select>
+            <select id="filtro-categoria" class="seletor-filtro" aria-label="Filtrar por categoria">
+              <option value="">Todas as categorias</option>
+            </select>
+          </div>
+
+          <div class="tabela-area">
+            <table class="tabela-dados">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Tipo</th>
+                  <th>Valor</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-lancamentos-corpo"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="tela" data-tela="categorias" style="display: none;">
+        <article class="card-conteudo">
+          <div class="card-titulo-area">
+            <h3>Categorias</h3>
+            <button id="botao-nova-categoria" class="botao-primario" type="button">
+              <i class="fas fa-plus"></i>
+              Nova categoria
+            </button>
+          </div>
+          <div id="grade-categorias" class="grade-categorias"></div>
+        </article>
+      </section>
+
+      <section class="tela" data-tela="contas" style="display: none;">
+        <article class="card-conteudo">
+          <div class="card-titulo-area">
+            <h3>Contas</h3>
+            <button id="botao-nova-conta" class="botao-primario" type="button">
+              <i class="fas fa-plus"></i>
+              Nova conta
+            </button>
+          </div>
+          <div id="lista-contas" class="lista-contas"></div>
+        </article>
+      </section>
+
+      <section class="tela" data-tela="relatorios" style="display: none;">
+        <article class="card-conteudo">
+          <div class="card-titulo-area">
+            <h3>Relatórios</h3>
+          </div>
+          <div class="area-opcoes-relatorios">
+            <button id="botao-exportar-relatorio" class="cartao-relatorio" type="button" onclick="document.getElementById('botao-exportar').click()">
+              <i class="fas fa-file-csv"></i>
+              <h4>Relatório do mês</h4>
+              <p>Exporte os lançamentos do mês escolhido no calendário.</p>
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <section class="tela" data-tela="configuracoes" style="display: none;">
+        <article class="card-conteudo">
+          <div class="card-titulo-area">
+            <h3>Configurações</h3>
+          </div>
+          <p>Área reservada para dados do perfil e preferências da aplicação.</p>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <div id="modal-lancamento" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo-lancamento">
+    <div class="modal-conteudo">
+      <div class="modal-cabecalho">
+        <h3 id="modal-titulo-lancamento">Novo lançamento</h3>
+        <button id="botao-fechar-modal-lancamento" class="botao-fechar" type="button" aria-label="Fechar"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="formulario-lancamento">
+        <div class="modal-corpo area-formulario">
+          <input id="lancamento-id" type="hidden">
+
+          <div class="grupo-formulario">
+            <label for="lancamento-tipo">Tipo *</label>
+            <select id="lancamento-tipo" class="campo-entrada" required>
+              <option value="">Selecione</option>
+              <option value="receita">Receita</option>
+              <option value="despesa">Despesa</option>
+            </select>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="lancamento-descricao">Descrição *</label>
+            <input id="lancamento-descricao" class="campo-entrada" type="text" maxlength="120" required>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="lancamento-categoria">Categoria *</label>
+            <select id="lancamento-categoria" class="campo-entrada" required>
+              <option value="">Selecione</option>
+            </select>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="lancamento-valor">Valor *</label>
+            <input id="lancamento-valor" class="campo-entrada" type="number" min="0.01" step="0.01" required>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="lancamento-data">Data *</label>
+            <input id="lancamento-data" class="campo-entrada" type="date" required>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="lancamento-conta">Conta</label>
+            <select id="lancamento-conta" class="campo-entrada">
+              <option value="">Sem conta vinculada</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-rodape">
+          <button id="botao-cancelar-lancamento" class="botao-secundario" type="button">Cancelar</button>
+          <button class="botao-primario" type="submit">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-categoria" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo-categoria">
+    <div class="modal-conteudo">
+      <div class="modal-cabecalho">
+        <h3 id="modal-titulo-categoria">Nova categoria</h3>
+        <button id="botao-fechar-modal-categoria" class="botao-fechar" type="button" aria-label="Fechar"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="formulario-categoria">
+        <div class="modal-corpo area-formulario">
+          <input id="categoria-id" type="hidden">
+
+          <div class="grupo-formulario">
+            <label for="categoria-nome">Nome *</label>
+            <input id="categoria-nome" class="campo-entrada" type="text" maxlength="80" required>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="categoria-tipo">Tipo *</label>
+            <select id="categoria-tipo" class="campo-entrada" required>
+              <option value="">Selecione</option>
+              <option value="receita">Receita</option>
+              <option value="despesa">Despesa</option>
+            </select>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="categoria-cor">Cor</label>
+            <input id="categoria-cor" class="campo-entrada" type="color" value="#3498db">
+          </div>
+        </div>
+
+        <div class="modal-rodape">
+          <button id="botao-cancelar-categoria" class="botao-secundario" type="button">Cancelar</button>
+          <button class="botao-primario" type="submit">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-conta" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo-conta">
+    <div class="modal-conteudo">
+      <div class="modal-cabecalho">
+        <h3 id="modal-titulo-conta">Nova conta</h3>
+        <button id="botao-fechar-modal-conta" class="botao-fechar" type="button" aria-label="Fechar"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="formulario-conta">
+        <div class="modal-corpo area-formulario">
+          <input id="conta-id" type="hidden">
+
+          <div class="grupo-formulario">
+            <label for="conta-nome">Nome *</label>
+            <input id="conta-nome" class="campo-entrada" type="text" maxlength="80" required>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="conta-tipo">Tipo *</label>
+            <select id="conta-tipo" class="campo-entrada" required>
+              <option value="">Selecione</option>
+              <option value="conta-corrente">Conta corrente</option>
+              <option value="poupanca">Poupança</option>
+              <option value="cartao-credito">Cartão de crédito</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div class="grupo-formulario">
+            <label for="conta-saldo-inicial">Saldo inicial</label>
+            <input id="conta-saldo-inicial" class="campo-entrada" type="number" step="0.01" value="0">
+          </div>
+        </div>
+
+        <div class="modal-rodape">
+          <button id="botao-cancelar-conta" class="botao-secundario" type="button">Cancelar</button>
+          <button class="botao-primario" type="submit">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-confirmacao" class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-confirmacao">
+    <div class="modal-conteudo modal-pequeno">
+      <div class="modal-cabecalho">
+        <h3 id="titulo-confirmacao">Confirmar exclusão</h3>
+        <button id="botao-fechar-modal-confirmacao" class="botao-fechar" type="button" aria-label="Fechar"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-corpo">
+        <p id="mensagem-confirmacao">Tem certeza que deseja excluir este item?</p>
+      </div>
+      <div class="modal-rodape">
+        <button id="botao-cancelar-exclusao" class="botao-secundario" type="button">Cancelar</button>
+        <button id="botao-confirmar-exclusao" class="botao-perigo" type="button">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="notificacoes-area" class="notificacoes-area" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

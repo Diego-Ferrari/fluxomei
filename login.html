@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar | FluxoMEI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <style>
+    :root {
+      --cor-primaria: #2563eb;
+      --cor-primaria-escuro: #1d4ed8;
+      --cor-sucesso: #10b981;
+      --cor-perigo: #ef4444;
+      --cor-aviso: #f59e0b;
+      --cor-fundo: #f1f5f9;
+      --cor-fundo-branco: #ffffff;
+      --cor-texto-principal: #1e293b;
+      --cor-texto-secundario: #64748b;
+      --cor-texto-claro: #94a3b8;
+      --cor-borda: #e2e8f0;
+      --sombra-suave: 0 1px 3px rgba(15, 23, 42, 0.08);
+      --sombra-media: 0 18px 45px rgba(15, 23, 42, 0.13);
+      --borda-raio: 10px;
+      --borda-raio-grande: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--cor-texto-principal);
+      background: var(--cor-fundo);
+    }
+
+    .pagina-login {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(360px, 0.95fr) minmax(460px, 1.05fr);
+    }
+
+    .painel-apresentacao {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(32px, 6vw, 80px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #ffffff;
+      background: linear-gradient(145deg, #1d4ed8 0%, #2563eb 48%, #3b82f6 100%);
+    }
+
+    .painel-apresentacao::before,
+    .painel-apresentacao::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .painel-apresentacao::before {
+      width: 460px;
+      height: 460px;
+      right: -180px;
+      top: -190px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .painel-apresentacao::after {
+      width: 360px;
+      height: 360px;
+      left: -200px;
+      bottom: -180px;
+      border: 60px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .marca,
+    .conteudo-apresentacao,
+    .rodape-apresentacao {
+      position: relative;
+      z-index: 1;
+    }
+
+    .marca {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .marca-icone {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--cor-primaria);
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    }
+
+    .conteudo-apresentacao {
+      max-width: 520px;
+      margin: auto 0;
+    }
+
+    .conteudo-apresentacao h1 {
+      max-width: 510px;
+      margin-bottom: 18px;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -2px;
+    }
+
+    .conteudo-apresentacao p {
+      max-width: 460px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .beneficios {
+      display: grid;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .beneficio {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .beneficio i {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 12px;
+    }
+
+    .rodape-apresentacao {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+    }
+
+    .painel-formulario {
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      background: #ffffff;
+    }
+
+    .cartao-login {
+      width: min(100%, 420px);
+    }
+
+    .cabecalho-formulario {
+      margin-bottom: 30px;
+    }
+
+    .selo {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 20px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      color: var(--cor-primaria);
+      background: #eff6ff;
+      font-size: 18px;
+    }
+
+    .cabecalho-formulario h2 {
+      margin-bottom: 8px;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: -0.8px;
+    }
+
+    .cabecalho-formulario p {
+      color: var(--cor-texto-secundario);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .mensagem {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: var(--borda-raio);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .mensagem.visivel {
+      display: flex;
+    }
+
+    .mensagem.erro {
+      color: #b91c1c;
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .mensagem.sucesso {
+      color: #047857;
+      border-color: #a7f3d0;
+      background: #ecfdf5;
+    }
+
+    .grupo-campo {
+      margin-bottom: 18px;
+    }
+
+    .grupo-campo label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--cor-texto-principal);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .campo-com-icone {
+      position: relative;
+    }
+
+    .campo-com-icone > i {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: var(--cor-texto-claro);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .campo-entrada {
+      width: 100%;
+      height: 48px;
+      padding: 0 46px 0 43px;
+      border: 1px solid var(--cor-borda);
+      border-radius: var(--borda-raio);
+      outline: none;
+      color: var(--cor-texto-principal);
+      background: #ffffff;
+      font: inherit;
+      font-size: 14px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .campo-entrada::placeholder {
+      color: var(--cor-texto-claro);
+    }
+
+    .campo-entrada:focus {
+      border-color: var(--cor-primaria);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .botao-senha {
+      position: absolute;
+      top: 50%;
+      right: 7px;
+      width: 36px;
+      height: 36px;
+      transform: translateY(-50%);
+      border: 0;
+      border-radius: 8px;
+      color: var(--cor-texto-secundario);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .botao-senha:hover {
+      color: var(--cor-primaria);
+      background: #eff6ff;
+    }
+
+    .linha-opcoes {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 2px 0 24px;
+      font-size: 13px;
+    }
+
+    .lembrar-acesso {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cor-texto-secundario);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .lembrar-acesso input {
+      accent-color: var(--cor-primaria);
+    }
+
+    .link-simples {
+      border: 0;
+      color: var(--cor-primaria);
+      background: none;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .link-simples:hover {
+      color: var(--cor-primaria-escuro);
+      text-decoration: underline;
+    }
+
+    .botao-entrar {
+      width: 100%;
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      border-radius: var(--borda-raio);
+      color: #ffffff;
+      background: var(--cor-primaria);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+      transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .botao-entrar:hover:not(:disabled) {
+      background: var(--cor-primaria-escuro);
+      transform: translateY(-1px);
+      box-shadow: 0 11px 22px rgba(37, 99, 235, 0.28);
+    }
+
+    .botao-entrar:disabled {
+      cursor: wait;
+      opacity: 0.72;
+    }
+
+    .rodape-formulario {
+      margin-top: 26px;
+      color: var(--cor-texto-secundario);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .rodape-formulario p + p {
+      margin-top: 12px;
+    }
+
+    .texto-seguranca {
+      color: var(--cor-texto-claro);
+      font-size: 12px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 850px) {
+      .pagina-login {
+        grid-template-columns: 1fr;
+      }
+
+      .painel-apresentacao {
+        min-height: 290px;
+        padding: 32px 28px;
+      }
+
+      .conteudo-apresentacao {
+        margin: 44px 0 0;
+      }
+
+      .conteudo-apresentacao h1 {
+        font-size: 34px;
+      }
+
+      .beneficios,
+      .rodape-apresentacao {
+        display: none;
+      }
+
+      .painel-formulario {
+        padding: 42px 24px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .painel-formulario {
+        padding: 32px 20px;
+      }
+
+      .linha-opcoes {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="pagina-login">
+    <section class="painel-apresentacao" aria-label="Apresentação do FluxoMEI">
+      <div class="marca">
+        <span class="marca-icone"><i class="fas fa-chart-line"></i></span>
+        <span>FluxoMEI</span>
+      </div>
+
+      <div class="conteudo-apresentacao">
+        <h1>Seu financeiro organizado para o seu negócio crescer.</h1>
+        <p>Controle receitas, despesas, contas e relatórios em um só lugar, de forma simples e segura.</p>
+
+        <div class="beneficios">
+          <div class="beneficio"><i class="fas fa-check"></i><span>Visão clara do fluxo de caixa</span></div>
+          <div class="beneficio"><i class="fas fa-check"></i><span>Relatórios por mês e categoria</span></div>
+          <div class="beneficio"><i class="fas fa-check"></i><span>Dados organizados para o seu MEI</span></div>
+        </div>
+      </div>
+
+      <p class="rodape-apresentacao">FluxoMEI · Controle financeiro simplificado</p>
+    </section>
+
+    <section class="painel-formulario">
+      <div class="cartao-login">
+        <header class="cabecalho-formulario">
+          <div class="selo"><i class="fas fa-lock"></i></div>
+          <h2 id="titulo-formulario">Bem-vindo de volta</h2>
+          <p id="texto-formulario">Entre com seus dados para acessar seu controle financeiro.</p>
+        </header>
+
+        <div id="mensagem-login" class="mensagem" role="alert" aria-live="polite">
+          <i id="icone-mensagem" class="fas fa-circle-info"></i>
+          <span id="texto-mensagem"></span>
+        </div>
+
+        <form id="formulario-login" novalidate>
+          <div class="grupo-campo">
+            <label for="email">E-mail</label>
+            <div class="campo-com-icone">
+              <i class="fas fa-envelope"></i>
+              <input id="email" class="campo-entrada" type="email" autocomplete="email" placeholder="voce@exemplo.com" required>
+            </div>
+          </div>
+
+          <div class="grupo-campo">
+            <label for="senha">Senha</label>
+            <div class="campo-com-icone">
+              <i class="fas fa-lock"></i>
+              <input id="senha" class="campo-entrada" type="password" autocomplete="current-password" placeholder="Digite sua senha" minlength="6" required>
+              <button id="botao-mostrar-senha" class="botao-senha" type="button" aria-label="Mostrar senha">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="linha-opcoes" class="linha-opcoes">
+            <label class="lembrar-acesso">
+              <input id="lembrar-acesso" type="checkbox">
+              <span>Lembrar de mim</span>
+            </label>
+            <button id="botao-esqueci-senha" class="link-simples" type="button">Esqueci minha senha</button>
+          </div>
+
+          <button id="botao-enviar" class="botao-entrar" type="submit">
+            <i class="fas fa-right-to-bracket"></i>
+            <span id="texto-botao-enviar">Entrar</span>
+          </button>
+        </form>
+
+        <footer class="rodape-formulario">
+          <p id="texto-alternar">Ainda não possui uma conta? <button id="botao-alternar-modo" class="link-simples" type="button">Criar conta</button></p>
+          <p class="texto-seguranca"><i class="fas fa-shield-halved"></i> Seus dados financeiros permanecem protegidos.</p>
+        </footer>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="login.js"></script>
+</body>
+</html>
