@@ -3,10 +3,8 @@
 const SUPABASE_URL = 'https://yvtqfczkxjmzeyjqvxls.supabase.co'
 const SUPABASE_ANON_KEY = 'sb_publishable_Pid_-CzlIWhlYp-vZms79g_NWbsOfKf'
 const clienteSupabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-const USER_ID_TESTE = '31d26650-f9e5-4af5-a3f3-47abd43fd1f2'
 
 const MESES_ABREVIADOS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-
 let categorias = []
 let contas = []
 let lancamentos = []
@@ -14,6 +12,8 @@ let recurrences = []
 let graficoMovimentacoes = null
 let usuarioAtual = null
 let periodoSelecionado = obterMesAtualISO()
+
+
 
 function obterMesAtualISO() {
   return new Date().toISOString().slice(0, 7)
@@ -989,7 +989,22 @@ if (seletorPeriodo) {
 if (botaoExportar) botaoExportar.addEventListener('click', exportarRelatorioDoPeriodo)
 
 async function obterUsuarioAtual() {
-  return { id: USER_ID_TESTE }
+  const {
+    data: { user },
+    error
+  } = await clienteSupabase.auth.getUser()
+
+  if (error) {
+    console.error('Erro ao obter usuário autenticado:', error)
+    throw error
+  }
+
+  if (!user) {
+    window.location.replace('login.html')
+    throw new Error('Usuário não autenticado.')
+  }
+
+  return user
 }
 
 async function carregarCategoriasSupabase() {
@@ -1085,6 +1100,36 @@ async function carregarRecorrenciasSupabase(user) {
   }
 
   recurrences = data || []
+}
+
+async function inicializarAplicacao() {
+  const sessao = await verificarSessaoDashboard()
+
+  if (!sessao) return
+
+  alterarTelaAtiva('dashboard')
+
+  try {
+    usuarioAtual = sessao.user
+
+    await Promise.all([
+      carregarCategoriasSupabase(),
+      carregarContasSupabase(usuarioAtual),
+      carregarTransacoesSupabase(usuarioAtual),
+      carregarRecorrenciasSupabase(usuarioAtual)
+    ])
+  } catch (erro) {
+    console.error('Erro ao inicializar aplicação:', erro)
+    mostrarNotificacao('Erro ao carregar dados do servidor.', 'erro')
+  }
+
+  atualizarDashboard()
+  listarLancamentos()
+  listarCategorias()
+  listarContas()
+  preencherSelecaoCategorias(campoFiltroCategoria)
+  preencherSelecaoCategorias(campoLancamentoCategoria)
+  preencherSelecaoContas(campoLancamentoConta)
 }
 
 async function inicializarAplicacao() {
