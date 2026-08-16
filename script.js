@@ -12,6 +12,7 @@ let recurrences = []
 let graficoMovimentacoes = null
 let usuarioAtual = null
 let periodoSelecionado = obterMesAtualISO()
+let sessaoAtual = null
 
 
 
@@ -989,24 +990,19 @@ if (seletorPeriodo) {
 if (botaoExportar) botaoExportar.addEventListener('click', exportarRelatorioDoPeriodo)
 
 async function obterUsuarioAtual() {
-  const {
-    data: { user },
-    error
-  } = await clienteSupabase.auth.getUser()
-
-  if (error) {
-    console.error('Erro ao obter usuário autenticado:', error)
-    throw error
+  if (sessaoAtual?.user) {
+    return sessaoAtual.user
   }
 
-  if (!user) {
-    window.location.replace('login.html')
+  const sessao = await verificarSessaoDashboard()
+
+  if (!sessao) {
     throw new Error('Usuário não autenticado.')
   }
 
-  return user
+  sessaoAtual = sessao
+  return sessao.user
 }
-
 async function carregarCategoriasSupabase() {
   const user = await obterUsuarioAtual()
   const { data, error } = await clienteSupabase
@@ -1102,12 +1098,34 @@ async function carregarRecorrenciasSupabase(user) {
   recurrences = data || []
 }
 
+async function verificarSessaoDashboard() {
+  const {
+    data: { session },
+    error
+  } = await clienteSupabase.auth.getSession()
+
+  if (error) {
+    console.error('Erro ao verificar sessão:', error)
+    window.location.replace('login.html')
+    return null
+  }
+
+  if (!session) {
+    window.location.replace('login.html')
+    return null
+  }
+
+  sessaoAtual = session
+  return session
+}
+
 async function inicializarAplicacao() {
   const sessao = await verificarSessaoDashboard()
 
   if (!sessao) return
 
   alterarTelaAtiva('dashboard')
+  preencherSeletorPeriodo()
 
   try {
     usuarioAtual = sessao.user
@@ -1121,6 +1139,7 @@ async function inicializarAplicacao() {
   } catch (erro) {
     console.error('Erro ao inicializar aplicação:', erro)
     mostrarNotificacao('Erro ao carregar dados do servidor.', 'erro')
+    return
   }
 
   atualizarDashboard()
@@ -1132,7 +1151,6 @@ async function inicializarAplicacao() {
   preencherSelecaoContas(campoLancamentoConta)
 }
 
-async function inicializarAplicacao() {
   alterarTelaAtiva('dashboard')
   preencherSeletorPeriodo()
 
@@ -1156,7 +1174,7 @@ async function inicializarAplicacao() {
   preencherSelecaoCategorias(campoFiltroCategoria)
   preencherSelecaoCategorias(campoLancamentoCategoria)
   preencherSelecaoContas(campoLancamentoConta)
-}
+
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', inicializarAplicacao)
