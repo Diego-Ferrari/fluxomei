@@ -1121,7 +1121,6 @@ async function verificarSessaoDashboard() {
 
 async function inicializarAplicacao() {
   const sessao = await verificarSessaoDashboard()
-
   if (!sessao) return
 
   alterarTelaAtiva('dashboard')
@@ -1129,7 +1128,6 @@ async function inicializarAplicacao() {
 
   try {
     usuarioAtual = sessao.user
-
     await Promise.all([
       carregarCategoriasSupabase(),
       carregarContasSupabase(usuarioAtual),
@@ -1149,23 +1147,7 @@ async function inicializarAplicacao() {
   preencherSelecaoCategorias(campoFiltroCategoria)
   preencherSelecaoCategorias(campoLancamentoCategoria)
   preencherSelecaoContas(campoLancamentoConta)
-}
-
-  alterarTelaAtiva('dashboard')
-  preencherSeletorPeriodo()
-
-  try {
-    usuarioAtual = await obterUsuarioAtual()
-    await Promise.all([
-      carregarCategoriasSupabase(),
-      carregarContasSupabase(usuarioAtual),
-      carregarTransacoesSupabase(usuarioAtual),
-      carregarRecorrenciasSupabase(usuarioAtual)
-    ])
-  } catch (erro) {
-    console.error('Erro ao inicializar aplicação:', erro)
-    mostrarNotificacao('Erro ao carregar dados do servidor.', 'erro')
-  }
+}s
 
   atualizarDashboard()
   listarLancamentos()
