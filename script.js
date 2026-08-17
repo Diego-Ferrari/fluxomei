@@ -989,6 +989,16 @@ if (seletorPeriodo) {
 
 if (botaoExportar) botaoExportar.addEventListener('click', exportarRelatorioDoPeriodo)
 
+async function executarComRetryDeSessao(operacao) {
+  const resultado = await operacao()
+  if (resultado.error?.code === 'PGRST303') {
+    console.warn('Sessão com horário desincronizado, tentando renovar...')
+    await clienteSupabase.auth.refreshSession()
+    return await operacao()
+  }
+  return resultado
+}
+
 async function obterUsuarioAtual() {
   if (sessaoAtual?.user) {
     return sessaoAtual.user
@@ -1005,11 +1015,13 @@ async function obterUsuarioAtual() {
 }
 async function carregarCategoriasSupabase() {
   const user = await obterUsuarioAtual()
-  const { data, error } = await clienteSupabase
+  const { data, error } = await executarComRetryDeSessao(() =>
+  clienteSupabase
     .from('categorias')
     .select('*')
     .eq('user_id', user.id)
     .order('name', { ascending: true })
+)
 
   if (error) {
     console.error('Erro ao carregar categorias:', error)
@@ -1030,11 +1042,13 @@ async function carregarCategoriasSupabase() {
 }
 
 async function carregarContasSupabase(user) {
-  const { data, error } = await clienteSupabase
+ const { data, error } = await executarComRetryDeSessao(() =>
+  clienteSupabase
     .from('contas')
     .select('*')
     .eq('user_id', user.id)
     .order('name', { ascending: true })
+)
 
   if (error) {
     console.error('Erro ao carregar contas:', error)
@@ -1054,11 +1068,13 @@ async function carregarContasSupabase(user) {
 }
 
 async function carregarTransacoesSupabase(user) {
-  const { data, error } = await clienteSupabase
+  const { data, error } = await executarComRetryDeSessao(() =>
+  clienteSupabase
     .from('transacoes')
     .select('*')
     .eq('user_id', user.id)
     .order('transaction_date', { ascending: false })
+)
 
   if (error) {
     console.error('Erro ao carregar transações:', error)
@@ -1084,12 +1100,13 @@ async function carregarTransacoesSupabase(user) {
 }
 
 async function carregarRecorrenciasSupabase(user) {
-  const { data, error } = await clienteSupabase
+  const { data, error } = await executarComRetryDeSessao(() =>
+  clienteSupabase
     .from('recorrencias')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-
+)
   if (error) {
     console.error('Erro ao carregar recorrências:', error)
     return
@@ -1122,7 +1139,7 @@ async function verificarSessaoDashboard() {
 async function inicializarAplicacao() {
   const sessao = await verificarSessaoDashboard()
   if (!sessao) return
-  
+
   document.getElementById('tela-carregamento')?.remove()
 
   alterarTelaAtiva('dashboard')
