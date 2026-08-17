@@ -1115,6 +1115,23 @@ async function carregarRecorrenciasSupabase(user) {
   recurrences = data || []
 }
 
+async function realizarLogout() {
+  const { error } = await clienteSupabase.auth.signOut()
+  if (error) {
+    console.error('Erro ao sair:', error)
+    mostrarNotificacao('Erro ao encerrar sessão.', 'erro')
+    return
+  }
+  window.location.replace('login.html')
+}
+
+const botaoLogout = document.getElementById('botao-logout')
+if (botaoLogout) {
+  botaoLogout.addEventListener('click', () => {
+    pedirConfirmacao('Tem certeza que deseja sair da sua conta?', realizarLogout)
+  })
+}
+
 async function verificarSessaoDashboard() {
   const {
     data: { session },
@@ -1147,6 +1164,8 @@ async function inicializarAplicacao() {
 
   try {
     usuarioAtual = sessao.user
+    const elementoEmailUsuario = document.getElementById('usuario-email-atual')
+    if (elementoEmailUsuario) elementoEmailUsuario.textContent = usuarioAtual.email
     await Promise.all([
       carregarCategoriasSupabase(),
       carregarContasSupabase(usuarioAtual),

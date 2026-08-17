@@ -735,6 +735,25 @@ body {
   animation: deslizar-direita 0.3s ease;
 }
 
+.rodape-lateral {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.botao-logout {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 8px;
+}
+
+.botao-logout:hover {
+  color: #c0392b;
+}
+
 @keyframes deslizar-direita {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
