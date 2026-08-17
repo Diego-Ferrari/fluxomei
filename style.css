@@ -739,15 +739,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .botao-logout {
-  background: none;
+  background: rgb(99, 99, 99);
   border: none;
-  color: #e74c3c;
+  color: #faf8f8;
   cursor: pointer;
   font-size: 16px;
   padding: 8px;
+  width: 50%;
+  border-radius: 10px;
 }
 
 .botao-logout:hover {
