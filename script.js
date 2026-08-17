@@ -1147,7 +1147,7 @@ async function inicializarAplicacao() {
   preencherSelecaoCategorias(campoFiltroCategoria)
   preencherSelecaoCategorias(campoLancamentoCategoria)
   preencherSelecaoContas(campoLancamentoConta)
-}s
+}
 
   atualizarDashboard()
   listarLancamentos()
