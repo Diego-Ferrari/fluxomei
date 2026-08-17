@@ -762,6 +762,7 @@ body {
   color: #4e4d4d;
   background-color: white;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  transition: 0.3s;
 
 }
 
