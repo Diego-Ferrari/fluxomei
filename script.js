@@ -1122,6 +1122,8 @@ async function verificarSessaoDashboard() {
 async function inicializarAplicacao() {
   const sessao = await verificarSessaoDashboard()
   if (!sessao) return
+  
+  document.getElementById('tela-carregamento')?.remove()
 
   alterarTelaAtiva('dashboard')
   preencherSeletorPeriodo()
